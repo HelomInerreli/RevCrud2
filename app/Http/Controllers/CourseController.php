@@ -63,10 +63,20 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'teacher_id' => ['required', 'integer', 'exists:teachers,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'numeric', 'gt:0'],
+        ], [
+            'price.gt' => 'O preço deve ser maior que 0.',
+        ]);
+
         $course = new Course();
-        $course->teacher_id = $request->input('teacher_id');
-        $course->name = $request->input('name');
-        $course->description = $request->input('description');
+        $course->teacher_id = $validated['teacher_id'];
+        $course->title = $validated['title'];
+        $course->category = $validated['category'];
+        $course->price = $validated['price'];
         $course->save();
 
         return redirect()->route('courses.index')->with('success', 'Course created successfully.');
@@ -104,9 +114,19 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        $course->teacher_id = $request->input('teacher_id');
-        $course->name = $request->input('name');
-        $course->description = $request->input('description');
+        $validated = $request->validate([
+            'teacher_id' => ['required', 'integer', 'exists:teachers,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'numeric', 'gt:0'],
+        ], [
+            'price.gt' => 'O preço deve ser maior que 0.',
+        ]);
+
+        $course->teacher_id = $validated['teacher_id'];
+        $course->title = $validated['title'];
+        $course->category = $validated['category'];
+        $course->price = $validated['price'];
         $course->save();
 
         return redirect()->route('courses.index')->with('success', 'Course updated successfully.');

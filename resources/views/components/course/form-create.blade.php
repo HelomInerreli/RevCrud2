@@ -6,14 +6,14 @@
             <div class="mb-3 ml-3">
                 <label>Teacher</label>
                 <select name="teacher_id" class="form-control" required>
-                    @foreach($teachers as $teacher)
+                    @foreach ($teachers as $teacher)
                         <option value="{{ $teacher->id }}">{{ $teacher->first_name }} {{ $teacher->last_name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-3 ml-5">
                 <label>Price</label>
-                <input type="number" name="price" class="form-control" required>
+                <input type="number" name="price" class="form-control" required min="0.00" step="0.01">
             </div>
             <div class="mb-3 ml-5">
                 <label>Category</label>
