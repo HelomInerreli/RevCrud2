@@ -4,7 +4,9 @@
             <h1 class="text-center text-primary">TEACHER LIST</h1>
         </div>
         <div class="col-2">
-            <a href="{{ url('teachers/create') }}" class="btn btn-success mb-3">New Teacher</a>
+            @auth
+                <a href="{{ url('teachers/create') }}" class="btn btn-success mb-3">New Teacher</a>
+            @endauth
         </div>
     </div>
 
@@ -49,14 +51,16 @@
                 <td>{{ $teacher->last_name }}</td>
                 <td>
                     <a href="{{ route('teachers.show', $teacher->id) }}" class="btn btn-outline-success">Show</a>
-                    <a href="{{ route('teachers.edit', $teacher->id) }}" class="btn btn-outline-primary">Edit</a>
-                    <form action="{{ route('teachers.destroy', $teacher->id) }}" method="POST"
-                        style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger"
-                            onclick="return confirm('Sure to delete?')">Delete</button>
-                    </form>
+                    @auth
+                        <a href="{{ route('teachers.edit', $teacher->id) }}" class="btn btn-outline-primary">Edit</a>
+                        <form action="{{ route('teachers.destroy', $teacher->id) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger"
+                                onclick="return confirm('Sure to delete?')">Delete</button>
+                        </form>
+                    @endauth
                 </td>
             </tr>
         @endforeach

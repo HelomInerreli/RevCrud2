@@ -4,7 +4,9 @@
             <h1 class="text-center text-primary">COURSE LIST</h1>
         </div>
         <div class="col-2">
-            <a href="{{ url('courses/create') }}" class="btn btn-success mb-3">New Course</a>
+            @auth
+                <a href="{{ url('courses/create') }}" class="btn btn-success mb-3">New Course</a>
+            @endauth
         </div>
     </div>
 
@@ -61,13 +63,15 @@
                 <td>{{ $course->category }}</td>
                 <td>
                     <a href="{{ route('courses.show', $course->id) }}" class="btn btn-outline-success">Show</a>
-                    <a href="{{ route('courses.edit', $course->id) }}" class="btn btn-outline-primary">Edit</a>
-                    <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger"
-                            onclick="return confirm('Sure to delete?')">Delete</button>
-                    </form>
+                    @auth
+                        <a href="{{ route('courses.edit', $course->id) }}" class="btn btn-outline-primary">Edit</a>
+                        <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger"
+                                onclick="return confirm('Sure to delete?')">Delete</button>
+                        </form>
+                    @endauth
                 </td>
             </tr>
         @endforeach

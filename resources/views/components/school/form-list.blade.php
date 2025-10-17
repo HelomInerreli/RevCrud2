@@ -4,7 +4,9 @@
             <h1 class="text-center text-primary">SCHOOL LIST</h1>
         </div>
         <div class="col-2">
-            <a href="{{ url('schools/create') }}" class="btn btn-success mb-3">New School</a>
+            @auth
+                <a href="{{ url('schools/create') }}" class="btn btn-success mb-3">New School</a>
+            @endauth
         </div>
     </div>
 
@@ -37,13 +39,15 @@
                 <td>{{ $school->city }}</td>
                 <td>
                     <a href="{{ route('schools.show', $school->id) }}" class="btn btn-outline-success">Show</a>
-                    <a href="{{ route('schools.edit', $school->id) }}" class="btn btn-outline-primary">Edit</a>
-                    <form action="{{ route('schools.destroy', $school->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger"
-                            onclick="return confirm('Sure to delete?')">Delete</button>
-                    </form>
+                    @auth
+                        <a href="{{ route('schools.edit', $school->id) }}" class="btn btn-outline-primary">Edit</a>
+                        <form action="{{ route('schools.destroy', $school->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger"
+                                onclick="return confirm('Sure to delete?')">Delete</button>
+                        </form>
+                    @endauth
                 </td>
             </tr>
         @endforeach
