@@ -12,10 +12,36 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::paginate(10);
-        return view('pages.course.index', ['courses' => $courses]);
+        $teacherId = $request->query('teacher_id');
+        $category = $request->query('category');
+
+        $courses = Course::with('teacher')
+            ->when($teacherId, function ($q) use ($teacherId) {
+                $q->where('teacher_id', $teacherId);
+            })
+            ->when($category, function ($q) use ($category) {
+                $q->where('category', $category);
+            })
+            ->paginate(10)
+            ->appends($request->only(['teacher_id', 'category']));
+
+        $teachers = \App\Teacher::orderBy('first_name')->orderBy('last_name')->get(['id', 'first_name', 'last_name']);
+        $categories = Course::query()
+            ->select('category')
+            ->whereNotNull('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
+
+        return view('pages.course.index', [
+            'courses' => $courses,
+            'teachers' => $teachers,
+            'categories' => $categories,
+            'selectedTeacherId' => $teacherId,
+            'selectedCategory' => $category,
+        ]);
     }
 
     /**

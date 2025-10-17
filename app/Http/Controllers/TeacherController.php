@@ -12,10 +12,24 @@ class TeacherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $teachers = Teacher::paginate(10);
-        return view('pages.teacher.index', ['teachers' => $teachers]);
+        $selectedSchoolId = $request->query('school_id');
+
+        $teachers = Teacher::with('school')
+            ->when($selectedSchoolId, function ($query) use ($selectedSchoolId) {
+                $query->where('school_id', $selectedSchoolId);
+            })
+            ->paginate(10)
+            ->appends($request->only('school_id'));
+
+        $schools = \App\School::orderBy('name')->get(['id', 'name']);
+
+        return view('pages.teacher.index', [
+            'teachers' => $teachers,
+            'schools' => $schools,
+            'selectedSchoolId' => $selectedSchoolId,
+        ]);
     }
 
     /**

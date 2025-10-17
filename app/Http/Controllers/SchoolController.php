@@ -12,10 +12,16 @@ class SchoolController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $schools = School::paginate(10);
-        return view('pages.school.index', ['schools' => $schools]);
+        $search = $request->input('search');
+        
+        $schools = School::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('city', 'like', "%{$search}%");
+        })->paginate(10)->appends(['search' => $search]);
+        
+        return view('pages.school.index', ['schools' => $schools, 'search' => $search]);
     }
 
     /**
